@@ -7,3 +7,7 @@ export interface Cake {
 }
 
 export type CakeInput = Omit<Cake, 'id'>;
+
+export type CakeField = keyof CakeInput;
+
+export type FieldErrors = Partial<Record<CakeField, string>>;
