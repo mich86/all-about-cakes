@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { mockCakes } from '@/mocks/mockCakes';
+import CakeCard from '@/components/molecules/CakeCard';
 
 export default function HomePage() {
   return (
@@ -20,22 +20,7 @@ export default function HomePage() {
       <ul className="grid list-none grid-cols-1 gap-8 p-0 sm:grid-cols-2 lg:grid-cols-3">
         {mockCakes.map((cake) => (
           <li key={cake.id}>
-            <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-              <div className="relative aspect-square w-full">
-                <Image
-                  src={cake.imageUrl}
-                  alt={cake.name}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-4 text-center">
-                <h2 className="text-lg font-semibold text-slate-800">
-                  {cake.name}
-                </h2>
-              </div>
-            </article>
+            <CakeCard cake={cake} />
           </li>
         ))}
       </ul>
