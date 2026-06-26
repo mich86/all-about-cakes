@@ -15,7 +15,7 @@ export default function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    'inline-flex min-h-11 items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition-colors';
+    'inline-flex w-max max-w-full shrink-0 items-center justify-center text-center rounded-lg px-4 py-2 text-sm font-semibold transition-colors min-h-11';
 
   const variants = {
     primary: 'bg-indigo-600 text-white hover:bg-indigo-700',
