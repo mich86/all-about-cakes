@@ -1,7 +1,18 @@
 'use client';
 
+import Button from '@/components/atoms/Button';
+import { fieldErrorId } from '@/lib/cakes/validation';
+import { FieldErrors } from '@/types/cake';
 import { useRouter } from 'next/navigation';
 import { SubmitEvent, useState } from 'react';
+
+const emptyErrors: FieldErrors = {};
+
+function fieldClassName(hasError: boolean) {
+  return `mt-1 block w-full rounded-md border p-2 ${
+    hasError ? 'border-red-500' : 'border-slate-300'
+  }`;
+}
 
 export default function AddCakeForm() {
   const router = useRouter();
@@ -9,119 +20,188 @@ export default function AddCakeForm() {
     name: '',
     comment: '',
     imageUrl: '',
-    yumFactor: '1',
+    yumFactor: 3,
   });
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>(emptyErrors);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert(
-      `Cake saved (mock only):\n${formData.name}\nYum factor: ${formData.yumFactor}`
-    );
-    router.push('/');
+    setFieldErrors(emptyErrors);
+    setFormError(null);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/cakes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.status === 400) {
+        const body = await response.json();
+        if (body.errors) {
+          setFieldErrors(body.errors);
+          return;
+        }
+        setFormError(body.message ?? 'Please check the form and try again.');
+        return;
+      }
+
+      if (!response.ok) {
+        setFormError('Failed to save cake. Please try again.');
+        return;
+      }
+
+      router.push('/');
+      router.refresh();
+    } catch {
+      setFormError('Unable to reach the server. Please check your connection.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+      {formError && (
+        <p
+          role="alert"
+          className="rounded-md bg-red-50 p-3 text-sm text-red-700"
+        >
+          {formError}
+        </p>
+      )}
+
       <div>
         <label
-          htmlFor="name"
+          htmlFor="cake-name"
           className="block text-sm font-medium text-slate-700"
         >
           Cake Name
         </label>
         <input
-          id="name"
-          name="name"
+          id="cake-name"
           type="text"
-          required
-          className="mt-1 block min-h-11 w-full rounded-md border border-slate-300 p-2"
+          aria-invalid={Boolean(fieldErrors.name)}
+          aria-describedby={fieldErrors.name ? fieldErrorId('name') : undefined}
+          className={`${fieldClassName(Boolean(fieldErrors.name))} min-h-11`}
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
         />
+        {fieldErrors.name && (
+          <p id={fieldErrorId('name')} className="mt-1 text-sm text-red-600">
+            {fieldErrors.name}
+          </p>
+        )}
       </div>
 
       <div>
         <label
-          htmlFor="comment"
+          htmlFor="cake-comment"
           className="block text-sm font-medium text-slate-700"
         >
           Comment
         </label>
         <textarea
-          id="comment"
-          name="comment"
-          required
-          minLength={5}
-          maxLength={200}
+          id="cake-comment"
           rows={3}
-          className="mt-1 block w-full rounded-md border border-slate-300 p-2"
+          aria-invalid={Boolean(fieldErrors.comment)}
+          aria-describedby={
+            fieldErrors.comment ? fieldErrorId('comment') : undefined
+          }
+          className={fieldClassName(Boolean(fieldErrors.comment))}
           value={formData.comment}
           onChange={(e) =>
             setFormData({ ...formData, comment: e.target.value })
           }
         />
+        {fieldErrors.comment && (
+          <p id={fieldErrorId('comment')} className="mt-1 text-sm text-red-600">
+            {fieldErrors.comment}
+          </p>
+        )}
       </div>
 
       <div>
         <label
-          htmlFor="imageUrl"
+          htmlFor="cake-image-url"
           className="block text-sm font-medium text-slate-700"
         >
           Image URL
         </label>
         <input
-          id="imageUrl"
-          name="imageUrl"
+          id="cake-image-url"
           type="url"
-          required
           placeholder="https://..."
-          className="mt-1 block min-h-11 w-full rounded-md border border-slate-300 p-2"
+          aria-invalid={Boolean(fieldErrors.imageUrl)}
+          aria-describedby={
+            fieldErrors.imageUrl ? fieldErrorId('imageUrl') : undefined
+          }
+          className={`${fieldClassName(Boolean(fieldErrors.imageUrl))} min-h-11`}
           value={formData.imageUrl}
           onChange={(e) =>
             setFormData({ ...formData, imageUrl: e.target.value })
           }
         />
+        {fieldErrors.imageUrl && (
+          <p
+            id={fieldErrorId('imageUrl')}
+            className="mt-1 text-sm text-red-600"
+          >
+            {fieldErrors.imageUrl}
+          </p>
+        )}
       </div>
 
       <div>
         <label
-          htmlFor="yumFactor"
+          htmlFor="cake-yum-factor"
           className="block text-sm font-medium text-slate-700"
         >
           Yum Factor (1-5)
         </label>
         <select
-          id="yumFactor"
-          name="yumFactor"
-          required
-          className="mt-1 block min-h-11 w-full rounded-md border border-slate-300 p-2"
+          id="cake-yum-factor"
+          aria-invalid={Boolean(fieldErrors.yumFactor)}
+          aria-describedby={
+            fieldErrors.yumFactor ? fieldErrorId('yumFactor') : undefined
+          }
+          className={`${fieldClassName(Boolean(fieldErrors.yumFactor))} min-h-11`}
           value={formData.yumFactor}
           onChange={(e) =>
-            setFormData({ ...formData, yumFactor: e.target.value })
+            setFormData({ ...formData, yumFactor: Number(e.target.value) })
           }
         >
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
+          {[1, 2, 3, 4, 5].map((num) => (
+            <option key={num} value={num}>
+              {num}
+            </option>
+          ))}
         </select>
+        {fieldErrors.yumFactor && (
+          <p
+            id={fieldErrorId('yumFactor')}
+            className="mt-1 text-sm text-red-600"
+          >
+            {fieldErrors.yumFactor}
+          </p>
+        )}
       </div>
 
       <div className="flex gap-4">
-        <button
+        <Button
           type="submit"
-          className="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+          variant="primary"
+          className="flex-1"
+          disabled={isSubmitting}
         >
-          Save Cake
-        </button>
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-        >
+          {isSubmitting ? 'Saving…' : 'Save Cake'}
+        </Button>
+        <Button type="button" variant="outline" onClick={() => router.back()}>
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );

@@ -1,4 +1,5 @@
-import { mockCakes } from '@/mocks/mockCakes';
+import { getApiUrl } from '@/lib/api-url';
+import { Cake } from '@/types/cake';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -9,11 +10,20 @@ interface CakeDetailPageProps {
 
 export default async function CakeDetailPage({ params }: CakeDetailPageProps) {
   const { id } = await params;
-  const cake = mockCakes.find((c) => c.id === Number(id));
 
-  if (!cake) {
+  const response = await fetch(await getApiUrl(`/api/cakes/${id}`), {
+    cache: 'no-store',
+  });
+
+  if (response.status === 404) {
     notFound();
   }
+
+  if (!response.ok) {
+    throw new Error('Unable to load cake details');
+  }
+
+  const cake: Cake = await response.json();
 
   return (
     <main className="mx-auto max-w-2xl p-8">

@@ -4,9 +4,10 @@ import { Cake } from '@/types/cake';
 
 interface CakeCardProps {
   cake: Cake;
+  priority?: boolean;
 }
 
-export default function CakeCard({ cake }: CakeCardProps) {
+export default function CakeCard({ cake, priority }: CakeCardProps) {
   return (
     <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
       <Link href={`/cakes/${cake.id}`} className="block">
@@ -15,6 +16,7 @@ export default function CakeCard({ cake }: CakeCardProps) {
             src={cake.imageUrl}
             alt={cake.name}
             fill
+            priority={priority}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover"
           />
