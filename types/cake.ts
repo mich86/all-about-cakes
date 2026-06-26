@@ -5,3 +5,5 @@ export interface Cake {
   imageUrl: string;
   yumFactor: number; // 1–5 rating
 }
+
+export type CakeInput = Omit<Cake, 'id'>;
