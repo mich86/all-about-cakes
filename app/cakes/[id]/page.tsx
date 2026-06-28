@@ -1,6 +1,8 @@
 import { getCakeById } from '@/lib/cakes/service';
+import Button from '@/components/atoms/Button';
+import PageContainer from '@/components/atoms/PageContainer';
+import PageHeader from '@/components/atoms/PageHeader';
 import Image from 'next/image';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 interface CakeDetailPageProps {
@@ -17,13 +19,15 @@ export default async function CakeDetailPage({ params }: CakeDetailPageProps) {
   }
 
   return (
-    <main className="mx-auto max-w-2xl p-8">
-      <Link
-        href="/"
-        className="mb-8 inline-flex min-h-11 items-center text-sm text-slate-500 hover:text-slate-800"
-      >
-        ← Back to cakes
-      </Link>
+    <PageContainer>
+      <PageHeader
+        title={cake.name}
+        action={
+          <Button href="/" variant="outline">
+            Back to cakes
+          </Button>
+        }
+      />
 
       <article>
         <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-xl">
@@ -37,7 +41,6 @@ export default async function CakeDetailPage({ params }: CakeDetailPageProps) {
           />
         </div>
 
-        <h1 className="mb-4 text-3xl font-bold text-slate-900">{cake.name}</h1>
         <p className="text-slate-600">{cake.comment}</p>
 
         <p className="mt-4 text-sm text-slate-500">
@@ -47,6 +50,6 @@ export default async function CakeDetailPage({ params }: CakeDetailPageProps) {
           </span>
         </p>
       </article>
-    </main>
+    </PageContainer>
   );
 }

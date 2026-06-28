@@ -1,5 +1,7 @@
 import { getCakes } from '@/lib/cakes/service';
 import Button from '@/components/atoms/Button';
+import PageContainer from '@/components/atoms/PageContainer';
+import PageHeader from '@/components/atoms/PageHeader';
 import CakeCard from '@/components/molecules/CakeCard';
 import { Cake } from '@/types/cake';
 
@@ -16,24 +18,20 @@ export default async function HomePage() {
 
   if (errorMessage) {
     return (
-      <main className="mx-auto max-w-7xl p-8">
+      <PageContainer>
         <p role="alert" className="text-red-500">
           {errorMessage}
         </p>
-      </main>
+      </PageContainer>
     );
   }
 
   return (
-    <main className="mx-auto max-w-7xl p-8">
-      <header className="mb-10 flex items-center justify-between gap-4">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-          Favourite Cakes
-        </h1>
-        <Button href="/add" variant="primary">
-          Add Cake
-        </Button>
-      </header>
+    <PageContainer>
+      <PageHeader
+        title="Favourite Cakes"
+        action={<Button href="/add" variant="primary">Add Cake</Button>}
+      />
 
       {cakes.length === 0 ? (
         <p className="py-20 text-center text-xl text-slate-500">
@@ -48,6 +46,6 @@ export default async function HomePage() {
           ))}
         </ul>
       )}
-    </main>
+    </PageContainer>
   );
 }

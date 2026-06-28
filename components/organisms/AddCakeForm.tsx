@@ -178,7 +178,7 @@ export default function AddCakeForm() {
         <Button
           type="submit"
           variant="primary"
-          className="flex-1"
+          className=""
           disabled={isSubmitting}
         >
           {isSubmitting ? 'Saving…' : 'Save Cake'}

@@ -1,3 +1,4 @@
+import Heading from '@/components/atoms/Heading';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Cake } from '@/types/cake';
@@ -26,7 +27,7 @@ export default function CakeCard({ cake, priority }: CakeCardProps) {
           />
         </div>
         <div className="p-4 text-center">
-          <h2 className="text-lg font-semibold text-slate-800">{cake.name}</h2>
+          <Heading level={2} size="sm" className="text-slate-800">{cake.name}</Heading>
         </div>
       </Link>
     </article>
