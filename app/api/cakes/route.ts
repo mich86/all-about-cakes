@@ -5,6 +5,7 @@ import {
 } from '@/lib/cakes/service';
 import { validateCakeInput } from '@/lib/cakes/validation';
 import { CakeInput } from '@/types/cake';
+import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -50,6 +51,7 @@ export async function POST(request: Request) {
     }
 
     const cake = await createCake(data);
+    revalidatePath('/');
     return NextResponse.json(cake, { status: 201 });
   } catch (error) {
     return NextResponse.json(

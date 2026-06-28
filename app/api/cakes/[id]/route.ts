@@ -6,6 +6,7 @@ import {
 } from '@/lib/cakes/service';
 import { validateCakeInput } from '@/lib/cakes/validation';
 import { CakeInput } from '@/types/cake';
+import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 interface RouteContext {
@@ -84,6 +85,8 @@ export async function PUT(request: Request, context: RouteContext) {
       return NextResponse.json({ message: 'Cake not found' }, { status: 404 });
     }
 
+    revalidatePath('/');
+    revalidatePath(`/cakes/${id}`);
     return NextResponse.json(cake);
   } catch (error) {
     return NextResponse.json(
@@ -111,6 +114,8 @@ export async function DELETE(_request: Request, context: RouteContext) {
       return NextResponse.json({ message: 'Cake not found' }, { status: 404 });
     }
 
+    revalidatePath('/');
+    revalidatePath(`/cakes/${id}`);
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     return NextResponse.json(
