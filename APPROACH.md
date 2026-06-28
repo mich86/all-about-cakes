@@ -8,15 +8,15 @@ A full-stack CRUD web application for browsing and submitting favourite cakes, b
 
 ## Tech Stack
 
-| Concern | Choice | Rationale |
-|---|---|---|
-| Framework | Next.js 16 (App Router) | Server Components, built-in routing, API Route Handlers, and Vercel-native deployment |
-| Language | TypeScript | Type safety across the full stack — shared types between API and UI |
-| Database | Supabase (PostgreSQL) | Managed Postgres with a REST/realtime client, no server infrastructure to maintain |
-| Styling | Tailwind CSS v4 | Utility-first, co-located with markup, no context switching |
-| Validation | Zod | Schema-based validation shared between server (API routes) and client (form feedback) |
-| Deployment | Vercel | Zero-config Next.js hosting, automatic HTTPS, global CDN |
-| Package manager | npm | Default, no additional tooling overhead |
+| Concern         | Choice                  | Rationale                                                                             |
+| --------------- | ----------------------- | ------------------------------------------------------------------------------------- |
+| Framework       | Next.js 16 (App Router) | Server Components, built-in routing, API Route Handlers, and Vercel-native deployment |
+| Language        | TypeScript              | Type safety across the full stack — shared types between API and UI                   |
+| Database        | Supabase (PostgreSQL)   | Managed Postgres with a REST/realtime client, no server infrastructure to maintain    |
+| Styling         | Tailwind CSS v4         | Utility-first, co-located with markup, no context switching                           |
+| Validation      | Zod                     | Schema-based validation shared between server (API routes) and client (form feedback) |
+| Deployment      | Vercel                  | Zero-config Next.js hosting, automatic HTTPS, global CDN                              |
+| Package manager | npm                     | Default, no additional tooling overhead                                               |
 
 ---
 
@@ -57,13 +57,13 @@ After any mutation (create, update, delete), `revalidatePath` is called server-s
 
 A RESTful API is exposed via Next.js Route Handlers:
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/api/cakes` | Fetch all cakes |
-| GET | `/api/cakes/:id` | Fetch single cake |
-| POST | `/api/cakes` | Create a cake |
-| PUT | `/api/cakes/:id` | Update a cake |
-| DELETE | `/api/cakes/:id` | Delete a cake |
+| Method | Endpoint         | Description       |
+| ------ | ---------------- | ----------------- |
+| GET    | `/api/cakes`     | Fetch all cakes   |
+| GET    | `/api/cakes/:id` | Fetch single cake |
+| POST   | `/api/cakes`     | Create a cake     |
+| PUT    | `/api/cakes/:id` | Update a cake     |
+| DELETE | `/api/cakes/:id` | Delete a cake     |
 
 ### Validation
 
@@ -89,6 +89,8 @@ PWA support was added without any additional packages, using Next.js 16's built-
 - **Meta tags** — `themeColor` via the `Viewport` export in `layout.tsx`, plus `appleWebApp` capable meta for iOS home screen support.
 
 Verified locally: Chrome's "Install Favourite Cakes" prompt appeared in the address bar, confirming all PWA eligibility criteria were met.
+
+A Lighthouse audit was run against the production Vercel deployment. The results (`lighthouse-score.png` in the repo root) show 100% scores across Performance, Accessibility, Best Practices, and SEO.
 
 ---
 
@@ -174,16 +176,3 @@ The API already supports `PUT /api/cakes/:id` but there is no edit UI. An edit p
 Development was done in [Cursor](https://cursor.sh/) with an AI coding assistant. An `AGENTS.md` file is included in the repo root — this contains instructions for AI agents about the specific Next.js version in use (Next.js 16, which has breaking changes from previous versions). This ensures any AI tooling reads the correct documentation before generating code rather than relying on potentially outdated training data.
 
 ---
-
-## Source Control
-
-Git with conventional commit messages, committed incrementally as features were built:
-
-- Initial scaffolding
-- Types and mock data
-- Component structure (atoms, molecules, organisms)
-- Supabase integration
-- Zod validation
-- Bug fixes (self-referencing fetch, cache revalidation)
-- PWA support
-- UI refinements
