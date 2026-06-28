@@ -19,7 +19,11 @@ export default async function HomePage() {
   if (errorMessage) {
     return (
       <PageContainer>
-        <p role="alert" className="text-red-500">
+        <PageHeader
+          title="Favourite Cakes"
+          action={<Button href="/add" variant="primary">Add Cake</Button>}
+        />
+        <p role="alert" className="text-red-700">
           {errorMessage}
         </p>
       </PageContainer>
@@ -34,7 +38,7 @@ export default async function HomePage() {
       />
 
       {cakes.length === 0 ? (
-        <p className="py-20 text-center text-xl text-slate-500">
+        <p className="py-20 text-center text-xl text-slate-600">
           No cakes found. Start by adding one!
         </p>
       ) : (

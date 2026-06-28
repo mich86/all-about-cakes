@@ -53,6 +53,16 @@ export default function AddCakeForm() {
         const body = await response.json();
         if (body.errors) {
           setFieldErrors(body.errors);
+          const fieldIdMap: Record<string, string> = {
+            name: 'cake-name',
+            comment: 'cake-comment',
+            imageUrl: 'cake-image-url',
+            yumFactor: 'cake-yum-factor',
+          };
+          const firstErrorKey = Object.keys(body.errors)[0];
+          setTimeout(() => {
+            document.getElementById(fieldIdMap[firstErrorKey] ?? '')?.focus();
+          }, 0);
           return;
         }
         setFormError(body.message ?? 'Please check the form and try again.');
@@ -75,7 +85,7 @@ export default function AddCakeForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+    <form onSubmit={handleSubmit} className="space-y-6" noValidate aria-busy={isSubmitting}>
       {formError && (
         <p
           role="alert"
@@ -92,6 +102,7 @@ export default function AddCakeForm() {
           name="name"
           type="text"
           autoComplete="off"
+          aria-required="true"
           hasError={Boolean(fieldErrors.name)}
           aria-describedby={fieldErrors.name ? fieldErrorId('name') : undefined}
           value={formData.name}
@@ -109,10 +120,15 @@ export default function AddCakeForm() {
           id="cake-comment"
           name="comment"
           rows={3}
+          maxLength={200}
+          aria-required="true"
           hasError={Boolean(fieldErrors.comment)}
-          aria-describedby={
-            fieldErrors.comment ? fieldErrorId('comment') : undefined
-          }
+          aria-describedby={[
+            'cake-comment-counter',
+            fieldErrors.comment ? fieldErrorId('comment') : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
           value={formData.comment}
           onChange={(e) => {
             clearFieldError('comment');
@@ -124,16 +140,18 @@ export default function AddCakeForm() {
             {fieldErrors.comment}
           </FieldError>
           <p
+            id="cake-comment-counter"
             aria-live="polite"
+            aria-label="Characters remaining"
             className={`ml-auto shrink-0 text-xs ${
               formData.comment.length > 200
-                ? 'text-red-500'
+                ? 'text-red-700'
                 : formData.comment.length >= 180
-                  ? 'text-amber-500'
-                  : 'text-slate-400'
+                  ? 'text-amber-700'
+                  : 'text-slate-600'
             }`}
           >
-            {200 - formData.comment.length} / 200
+            {200 - formData.comment.length} of 200 characters remaining
           </p>
         </div>
       </div>
@@ -146,6 +164,7 @@ export default function AddCakeForm() {
           type="url"
           placeholder="https://..."
           autoComplete="url"
+          aria-required="true"
           hasError={Boolean(fieldErrors.imageUrl)}
           aria-describedby={
             fieldErrors.imageUrl ? fieldErrorId('imageUrl') : undefined
@@ -166,7 +185,7 @@ export default function AddCakeForm() {
         <Select
           id="cake-yum-factor"
           name="yumFactor"
-          aria-label="Yum factor rating from 1 to 5"
+          aria-required="true"
           hasError={Boolean(fieldErrors.yumFactor)}
           aria-describedby={
             fieldErrors.yumFactor ? fieldErrorId('yumFactor') : undefined
@@ -177,9 +196,15 @@ export default function AddCakeForm() {
             setFormData({ ...formData, yumFactor: Number(e.target.value) });
           }}
         >
-          {[1, 2, 3, 4, 5].map((num) => (
-            <option key={num} value={num}>
-              {num}
+          {[
+            { value: 1, label: '1 – Not great' },
+            { value: 2, label: '2 – Decent' },
+            { value: 3, label: '3 – Good' },
+            { value: 4, label: '4 – Very good' },
+            { value: 5, label: '5 – Outstanding' },
+          ].map(({ value, label }) => (
+            <option key={value} value={value}>
+              {label}
             </option>
           ))}
         </Select>

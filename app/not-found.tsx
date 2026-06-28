@@ -1,29 +1,27 @@
-import AddCakeForm from '@/components/organisms/AddCakeForm';
 import Button from '@/components/atoms/Button';
 import PageContainer from '@/components/atoms/PageContainer';
 import PageHeader from '@/components/atoms/PageHeader';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Add a New Cake | Favourite Cakes',
+  title: 'Page Not Found | Favourite Cakes',
 };
 
-export default function AddPage() {
+export default function NotFound() {
   return (
     <PageContainer>
       <PageHeader
-        title="Add a New Cake"
+        title="Page Not Found"
         action={
           <Button href="/" variant="outline">
             Back to cakes
           </Button>
         }
       />
-      <div className="mx-auto max-w-3xl">
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <AddCakeForm />
-        </div>
-      </div>
+      <p className="text-slate-600">
+        The cake you&apos;re looking for doesn&apos;t exist. It may have been
+        removed or the link may be incorrect.
+      </p>
     </PageContainer>
   );
 }
