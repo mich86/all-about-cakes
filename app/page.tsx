@@ -1,4 +1,4 @@
-import { getApiUrl } from '@/lib/api-url';
+import { getCakes } from '@/lib/cakes/service';
 import Button from '@/components/atoms/Button';
 import CakeCard from '@/components/molecules/CakeCard';
 import { Cake } from '@/types/cake';
@@ -8,19 +8,10 @@ export default async function HomePage() {
   let errorMessage: string | null = null;
 
   try {
-    const response = await fetch(await getApiUrl('/api/cakes'), {
-      cache: 'no-store',
-    });
-
-    if (!response.ok) {
-      const body = await response.json().catch(() => null);
-      errorMessage =
-        body?.message ?? `Failed to load cakes (${response.status})`;
-    } else {
-      cakes = await response.json();
-    }
-  } catch {
-    errorMessage = 'Unable to reach the cakes API. Please try again.';
+    cakes = await getCakes();
+  } catch (error) {
+    errorMessage =
+      error instanceof Error ? error.message : 'Unable to load cakes. Please try again.';
   }
 
   if (errorMessage) {
