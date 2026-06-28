@@ -119,9 +119,23 @@ export default function AddCakeForm() {
             setFormData({ ...formData, comment: e.target.value });
           }}
         />
-        <FieldError id={fieldErrorId('comment')}>
-          {fieldErrors.comment}
-        </FieldError>
+        <div className="mt-1 flex items-start justify-between gap-2">
+          <FieldError id={fieldErrorId('comment')}>
+            {fieldErrors.comment}
+          </FieldError>
+          <p
+            aria-live="polite"
+            className={`ml-auto shrink-0 text-xs ${
+              formData.comment.length > 200
+                ? 'text-red-500'
+                : formData.comment.length >= 180
+                  ? 'text-amber-500'
+                  : 'text-slate-400'
+            }`}
+          >
+            {200 - formData.comment.length} / 200
+          </p>
+        </div>
       </div>
 
       <div>

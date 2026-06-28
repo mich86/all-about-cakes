@@ -14,7 +14,7 @@ export default function AddPage() {
           </Button>
         }
       />
-      <div className="mx-auto max-w-[900px]">
+      <div className="mx-auto max-w-3xl">
         <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
           <AddCakeForm />
         </div>
